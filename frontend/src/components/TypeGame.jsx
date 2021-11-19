@@ -1,87 +1,31 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Wrapper } from '../styles/TypeGame.styled';
 import StartScreen from './StartScreen';
 import GameScreen from './GameScreen';
 import EndScreen from './EndScreen';
+import { useContext } from 'react';
+import GameContext from '../context/GameContext';
 
-
-const TypeGame = ({ score,setScore,words,gameStart,setGameStart,wpm,setWpm,timerList,setTimerList,currentTime,setCurrentTime,setCurrentTimeLimit,currentTimeLimit,currentWord,setCurrentWord,currentInput,setCurrentInput}) => 
+const TypeGame = () => 
 {
-
-    useEffect(() => 
-    {
-        const arrayOfCurrentWord = [];
-        const arrayOfCurrentInput = [];
-        setArraysForLetterChecking();
-        function setArraysForLetterChecking()
-            {
-            for(let i = 0; i < currentWord.length; i++)
-            {
-                arrayOfCurrentWord.push(currentWord[i])
-            }
-            for(let i = 0; i < currentInput.length; i++)
-            {      
-                arrayOfCurrentInput.push(currentInput[i])
-                if(arrayOfCurrentWord[i] !== arrayOfCurrentInput[i] && arrayOfCurrentInput.length > 0)
-                {
-                    setCurrentInput("");
-                }
-            }
-        }
-     
-        let initialArray = [];  
-        if(currentInput === currentWord)
-        {
-            if(timerList.length > 0)
-            {  
-                timerList.map((current) => initialArray.push(current))
-                initialArray.push(currentTime / 10)
-                setTimerList(initialArray)
-            }
-            else
-            {
-                initialArray.push(currentTime / 10)
-                setTimerList(initialArray)
-            }  
-            setCurrentWord(words[Math.floor(Math.random() * words.length)])
-            setCurrentInput("")
-            setScore(score + 1)
-            setCurrentTime(0)
-        }
-
+    const {gameStart} = useContext(GameContext)
+    const {currentTime} = useContext(GameContext)
+    const {currentTimeLimit} = useContext(GameContext)
     
-    },[currentInput, currentTime, currentWord, score, setCurrentInput, setCurrentTime, setCurrentWord, setScore, setTimerList, timerList, words])
-    
-    useEffect(() => 
-    {
-        if(gameStart)
-        {
-            const timer = setInterval(() =>
-            {
-                setCurrentTime(currentTime + 1)
-            }, 100)
-            
-            return () => {
-                clearInterval(timer)
-            }
-        }
-       
-    }, [currentTime, gameStart, setCurrentTime])
-
     
     return ( 
         <Wrapper>
             {
                 gameStart === false 
                 ? 
-                    <StartScreen setGameStart={setGameStart}/>
+                    <StartScreen/>
                 :
                 currentTime < currentTimeLimit && gameStart &&  
-                    <GameScreen currentTime={currentTime} score={score} currentWord={currentWord} currentInput={currentInput} setCurrentInput={setCurrentInput}/>            
+                    <GameScreen/>            
             }   
             {
                 currentTime >= currentTimeLimit && gameStart &&   
-                    <EndScreen wpm={wpm} setGameStart={setGameStart}/>
+                    <EndScreen/>
             }
         </Wrapper>
     )

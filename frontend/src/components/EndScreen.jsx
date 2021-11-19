@@ -1,8 +1,12 @@
 import React from 'react'
 import { BeginButton } from '../styles/App.styled'
+import GameContext from '../context/GameContext'        
+import { useContext } from 'react'
 
+const EndScreen = () => { 
+    const {setGameStart} = useContext(GameContext)
+    const {wpm} = useContext(GameContext)
 
-const EndScreen = ({wpm, setGameStart}) => {
     return (
         <>
             <p>You lose! {wpm}</p>
