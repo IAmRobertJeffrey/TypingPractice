@@ -1,59 +1,88 @@
-import React, { useState, useEffect } from 'react'
-import { UserInput } from '../styles/TypeGame.styled';
+import React, { useEffect } from 'react'
 import { Wrapper } from '../styles/TypeGame.styled';
-import Word from './Word'
+import StartScreen from './StartScreen';
+import GameScreen from './GameScreen';
+import EndScreen from './EndScreen';
 
 
-const TypeGame = () => {
-    const words = ["hi", "there", "brown", "cow"];
-    const [currentWord, setCurrentWord] = useState(words[Math.floor(Math.random() * words.length)]);
-    const [currentInput, setCurrentInput] = useState("");
-    const [currentTime, setCurrentTime] = useState(0)
+const TypeGame = ({ score,setScore,words,gameStart,setGameStart,wpm,setWpm,timerList,setTimerList,currentTime,setCurrentTime,setCurrentTimeLimit,currentTimeLimit,currentWord,setCurrentWord,currentInput,setCurrentInput}) => 
+{
 
-    const [score, setScore] = useState(0);
-    const arrayOfCurrentWord = [];
-    const arrayOfCurrentInput = [];
-
-    useEffect(() => {
-        const timer = setInterval(() =>{
-            setCurrentTime(currentTime + 1)
-        }, 100)
-        
-        return () => {
-            clearInterval(timer)
-        }
-    }, [currentTime, setCurrentTime])
-
-    for(let i = 0; i < currentWord.length; i++)
+    useEffect(() => 
     {
-        arrayOfCurrentWord.push(currentWord[i])
-    }
-    for(let i = 0; i < currentInput.length; i++)
-    {      
-        arrayOfCurrentInput.push(currentInput[i])
-        if(arrayOfCurrentWord[i] !== arrayOfCurrentInput[i] && arrayOfCurrentInput.length > 0)
-        {
-            setCurrentInput("");
+        const arrayOfCurrentWord = [];
+        const arrayOfCurrentInput = [];
+        setArraysForLetterChecking();
+        function setArraysForLetterChecking()
+            {
+            for(let i = 0; i < currentWord.length; i++)
+            {
+                arrayOfCurrentWord.push(currentWord[i])
+            }
+            for(let i = 0; i < currentInput.length; i++)
+            {      
+                arrayOfCurrentInput.push(currentInput[i])
+                if(arrayOfCurrentWord[i] !== arrayOfCurrentInput[i] && arrayOfCurrentInput.length > 0)
+                {
+                    setCurrentInput("");
+                }
+            }
         }
-    }
-   
-   
+     
+        let initialArray = [];  
+        if(currentInput === currentWord)
+        {
+            if(timerList.length > 0)
+            {  
+                timerList.map((current) => initialArray.push(current))
+                initialArray.push(currentTime / 10)
+                setTimerList(initialArray)
+            }
+            else
+            {
+                initialArray.push(currentTime / 10)
+                setTimerList(initialArray)
+            }  
+            setCurrentWord(words[Math.floor(Math.random() * words.length)])
+            setCurrentInput("")
+            setScore(score + 1)
+            setCurrentTime(0)
+        }
+
+    
+    },[currentInput, currentTime, currentWord, score, setCurrentInput, setCurrentTime, setCurrentWord, setScore, setTimerList, timerList, words])
     
     useEffect(() => 
     {
-      
-        if(currentInput === currentWord)
+        if(gameStart)
         {
-            setCurrentWord(words[Math.floor(Math.random() * words.length)])
-            setCurrentInput("")
-            setScore(s=> s + 1)
+            const timer = setInterval(() =>
+            {
+                setCurrentTime(currentTime + 1)
+            }, 100)
+            
+            return () => {
+                clearInterval(timer)
+            }
         }
-    }, [currentInput, setCurrentWord, currentWord, words])
+       
+    }, [currentTime, gameStart, setCurrentTime])
 
-    return (
+    
+    return ( 
         <Wrapper>
-            <Word currentTime={currentTime} score={score} word={currentWord}/>
-            <UserInput autoFocus type="text" value={currentInput} onChange={(e) => setCurrentInput(e.target.value)}/>
+            {
+                gameStart === false 
+                ? 
+                    <StartScreen setGameStart={setGameStart}/>
+                :
+                currentTime < currentTimeLimit && gameStart &&  
+                    <GameScreen currentTime={currentTime} score={score} currentWord={currentWord} currentInput={currentInput} setCurrentInput={setCurrentInput}/>            
+            }   
+            {
+                currentTime >= currentTimeLimit && gameStart &&   
+                    <EndScreen wpm={wpm} setGameStart={setGameStart}/>
+            }
         </Wrapper>
     )
 }

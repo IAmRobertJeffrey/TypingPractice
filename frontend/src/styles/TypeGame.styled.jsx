@@ -22,8 +22,6 @@ flex-direction:column;
 align-items: center;
 justify-content: space-around;
 
-@media (max-width: 1050px) {
-    width:100%
-  }
+
 
 `

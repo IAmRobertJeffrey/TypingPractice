@@ -23,13 +23,15 @@ export const Score = styled.div`
 
 width:150px;
 height:150px;
-background-color: white;
+border:5px solid white;
+background-color: #102B3F;
 border-radius: 50%;
-color: #1a4363;
+color: white;
 display: flex;
 justify-content: center;
 align-items: center;
 min-width: fit-content;
+
 
 p{
     font-family:SpaceMono;
