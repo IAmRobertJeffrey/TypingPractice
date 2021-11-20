@@ -6,7 +6,8 @@ export const Wrapper = styled.div`
     color: white;
     display: flex;
     align-items: center;
-    justify-content:center;
+    justify-content:flex-start;
+    flex-direction: column;
 `
 
 export const BeginButton = styled.button`

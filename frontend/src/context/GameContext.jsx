@@ -13,14 +13,28 @@ export const GameProvidor = ({children}) =>
     const [wpm, setWpm]  = useState(0);
     const [gameStart, setGameStart] = useState(false)
     const [score, setScore] = useState(0);
+    const [resultsShown, setResultsShown] = useState(false);
+    const [playedAGame, setPlayedAGame] = useState(false)
+
+    //resets the game
+    function resetGame()
+    {
+        setCurrentInput("");
+        setCurrentTime(0);
+        setTimerList([]);
+        setScore(0)
+        setResultsShown(false)
+        setGameStart(true)
+    }
 
     useEffect(() => 
     {
+        //Checks whether you've typed incorrectly and resets you if you have.
         const arrayOfCurrentWord = [];
         const arrayOfCurrentInput = [];
         setArraysForLetterChecking();
         function setArraysForLetterChecking()
-            {
+        {
             for(let i = 0; i < currentWord.length; i++)
             {
                 arrayOfCurrentWord.push(currentWord[i])
@@ -35,6 +49,7 @@ export const GameProvidor = ({children}) =>
             }
         }
      
+        //This incremenets the score when you type correctly
         let initialArray = [];  
         if(currentInput === currentWord)
         {
@@ -54,25 +69,39 @@ export const GameProvidor = ({children}) =>
             setScore(score + 1)
             setCurrentTime(0)
         }
-
     
     },[currentInput, currentTime, currentWord, score, setCurrentInput, setCurrentTime, setCurrentWord, setScore, setTimerList, timerList, words])
     
     useEffect(() => 
     {
-        if(gameStart)
+        //starts a timer and checks whether the current time is over the limit, stops the game if it is.
+        const timer = setInterval(() =>
         {
-            const timer = setInterval(() =>
+            if(currentTime < currentTimeLimit && gameStart)
             {
                 setCurrentTime(currentTime + 1)
-            }, 100)
-            
-            return () => {
-                clearInterval(timer)
+                setPlayedAGame(true);
             }
+            else
+            {
+                clearInterval(timer)
+                setGameStart(false)
+                setCurrentTime(0)
+
+                if(playedAGame)
+                { 
+                    setPlayedAGame(false)
+                    setResultsShown(true)
+                }
+                
+            }
+        }, 100)
+        
+        return () => {
+            clearInterval(timer)
         }
-       
-    }, [currentTime, gameStart, setCurrentTime])
+        
+    }, [currentTimeLimit,currentTime, gameStart, setResultsShown, playedAGame])
 
 
     return(
@@ -94,6 +123,9 @@ export const GameProvidor = ({children}) =>
             setCurrentWord,
             currentInput,
             setCurrentInput,
+            resetGame,
+            resultsShown,
+            setResultsShown
         }}>
         {children}
         </GameContext.Provider>

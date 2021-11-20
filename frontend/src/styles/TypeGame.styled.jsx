@@ -15,6 +15,7 @@ color: #1a4363;
 `
 
 export const Wrapper = styled.div`
+margin-top:50px;
 min-height: 400px;
 height: 50%;
 display: flex;

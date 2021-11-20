@@ -4,11 +4,21 @@ import GameContext from '../context/GameContext'
 import { useContext } from 'react'
 
 const StartScreen = () => {
-    const {setGameStart} = useContext(GameContext)
+    const {resetGame} = useContext(GameContext)
+   
+
+    function handleStart()
+    {
+        resetGame()
+       
+    }
+    
     return (
-        <BeginButton onClick={() => setGameStart(true)}>
+        
+        <BeginButton onClick={handleStart}>
             Begin
         </BeginButton>
+      
     )
 }
 

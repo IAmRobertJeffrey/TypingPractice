@@ -8,24 +8,28 @@ import GameContext from '../context/GameContext';
 
 const TypeGame = () => 
 {
-    const {gameStart} = useContext(GameContext)
-    const {currentTime} = useContext(GameContext)
-    const {currentTimeLimit} = useContext(GameContext)
-    
+    const {gameStart, currentTime, currentTimeLimit, resultsShown} = useContext(GameContext)
+
     
     return ( 
         <Wrapper>
             {
-                gameStart === false 
+                !gameStart && currentTime === 0 && !resultsShown
                 ? 
+               
                     <StartScreen/>
+              
                 :
-                currentTime < currentTimeLimit && gameStart &&  
-                    <GameScreen/>            
+                currentTime < currentTimeLimit && gameStart && !resultsShown &&
+               
+                    <GameScreen/>    
+                   
             }   
             {
-                currentTime >= currentTimeLimit && gameStart &&   
+                currentTime <= currentTimeLimit && resultsShown && 
+               
                     <EndScreen/>
+               
             }
         </Wrapper>
     )
