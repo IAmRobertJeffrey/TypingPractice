@@ -4,20 +4,21 @@ import GameContext from '../context/GameContext'
 import { useContext } from 'react'
 
 const EndScreen = () => { 
-    const {setGameStart, wpm, setResultsShown} = useContext(GameContext)
+    const {setGameStart, wpm, setResultsShown, resetGame} = useContext(GameContext)
    
     function handleRestart()
     {
         setResultsShown(false)
         setGameStart(false);
+        resetGame();
     }
 
     return (
         <>
-            <p>{wpm} words per minute.</p>
             <BeginButton onClick={handleRestart}>
                 Restart
             </BeginButton>
+            <p>{wpm} words per minute.</p>
         </>
     )
 }

@@ -3,7 +3,8 @@ import { BeginButton } from '../styles/App.styled'
 import GameContext from '../context/GameContext'
 import { useContext } from 'react'
 
-const StartScreen = () => {
+const StartScreen = () => 
+{
     const {resetGame} = useContext(GameContext)
    
 
@@ -14,11 +15,11 @@ const StartScreen = () => {
     }
     
     return (
-        
+       
         <BeginButton onClick={handleStart}>
             Begin
         </BeginButton>
-      
+    
     )
 }
 
