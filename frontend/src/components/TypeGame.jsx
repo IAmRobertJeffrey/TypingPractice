@@ -10,26 +10,20 @@ const TypeGame = () =>
 {
     const {gameStart, currentTime, currentTimeLimit, resultsShown} = useContext(GameContext)
 
-    
     return ( 
         <Wrapper>
             {
                 !gameStart && currentTime === 0 && !resultsShown
-                ? 
-               
-                    <StartScreen/>
-              
+                ?  
+                    <StartScreen/>  
                 :
                 currentTime < currentTimeLimit && gameStart && !resultsShown &&
-               
                     <GameScreen/>    
-                   
             }   
             {
                 currentTime <= currentTimeLimit && resultsShown && 
                
                     <EndScreen/>
-               
             }
         </Wrapper>
     )

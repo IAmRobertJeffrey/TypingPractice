@@ -14,12 +14,10 @@ const StartScreen = () =>
        
     }
     
-    return (
-       
+    return (   
         <BeginButton onClick={handleStart}>
             Begin
         </BeginButton>
-    
     )
 }
 
