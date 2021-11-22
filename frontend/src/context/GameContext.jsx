@@ -1,10 +1,13 @@
 import { createContext, useState, useEffect, useMemo} from "react";
+import socketIOClient from "socket.io-client";
+const ENDPOINT = "http://localhost:4024";
+const socket = socketIOClient(ENDPOINT);
 
 const GameContext = createContext({});
 
 export const GameProvidor = ({children}) => 
 {
-    const words = useMemo(() => ["i", "hello", "there"], []);
+    const words = useMemo(() => ["hello", "there", "quick", "chocolate", "sand", "cloud", "ball", "house"], []);
     const [currentWord, setCurrentWord] = useState(words[Math.floor(Math.random() * words.length)]);
     const [currentInput, setCurrentInput] = useState("");
     const [currentTime, setCurrentTime] = useState(0)
@@ -64,10 +67,23 @@ export const GameProvidor = ({children}) =>
                 initialArray.push(currentTime / 10)
                 setTimerList(initialArray)
             }  
+            setScore(score + 1)
+            submitWord();
             setCurrentWord(words[Math.floor(Math.random() * words.length)])
             setCurrentInput("")
-            setScore(score + 1)
             setCurrentTime(0)
+        }
+
+        function submitWord()
+        {
+            const clientData = {
+                userId: "20934u4udhwf",
+                gameId: "adjdj3998",
+                time: currentTime / 10,
+                word: currentWord,
+                score: score + 1
+            }
+            socket.emit("word", clientData);
         }
     
     },[currentInput, currentTime, currentWord, score, setCurrentInput, setCurrentTime, setCurrentWord, setScore, setTimerList, timerList, words])
@@ -90,18 +106,47 @@ export const GameProvidor = ({children}) =>
 
                 if(playedAGame)
                 { 
+                    console.log(timerList);
+                    
+                    calculateWPM();
+                    submitMatch();
                     setPlayedAGame(false)
+                    
                     setResultsShown(true)
                 }
                 
             }
         }, 100)
+
+        function submitMatch()
+        {
+            const clientData = {
+                userId: "20934u4udhwf",
+                gameId: "adjdj3998",
+                wpm: calculateWPM(),
+                score: score
+            }
+            socket.emit("match", clientData);
+        }
+
+        function calculateWPM()
+        {
+            let timeTotal = 0;
+            timerList.map((current) => timeTotal += current)
+            let multiplier = timeTotal / timerList.length;
+            setWpm((60 / multiplier).toFixed(3))
+            return (60 / multiplier).toFixed(3);
+        }
+        
         
         return () => {
             clearInterval(timer)
         }
         
-    }, [currentTimeLimit,currentTime, gameStart, setResultsShown, playedAGame])
+    }, [score, wpm, currentTimeLimit,currentTime, gameStart, setResultsShown, playedAGame, timerList])
+
+
+    
 
 
     return(
