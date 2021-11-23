@@ -18,6 +18,9 @@ export const GameProvidor = ({children}) =>
     const [score, setScore] = useState(0);
     const [resultsShown, setResultsShown] = useState(false);
     const [playedAGame, setPlayedAGame] = useState(false)
+    
+
+  
 
     //resets the game
     function resetGame()
@@ -170,7 +173,7 @@ export const GameProvidor = ({children}) =>
             setCurrentInput,
             resetGame,
             resultsShown,
-            setResultsShown
+            setResultsShown,
         }}>
         {children}
         </GameContext.Provider>

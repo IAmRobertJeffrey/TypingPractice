@@ -12,7 +12,7 @@ function auth(req, res, next) {
       return res.send("Authorized").status(200);
     }
   } catch (err) {
-    res.status(401).json({ errorMessage: "Unauthorized" });
+    res.status(401).json({ errorMessage: err });
     console.log(err);
   }
 }

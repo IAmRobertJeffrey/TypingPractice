@@ -6,7 +6,7 @@ import EndScreen from './EndScreen';
 import { useContext } from 'react';
 import GameContext from '../context/GameContext';
 
-const TypeGame = () => 
+const TypeGame = ({mode}) => 
 {
     const {gameStart, currentTime, currentTimeLimit, resultsShown} = useContext(GameContext)
 

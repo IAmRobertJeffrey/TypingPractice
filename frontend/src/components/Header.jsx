@@ -1,25 +1,58 @@
-import React from 'react'
-import { Wrapper } from '../styles/Header.styled'
+import React, { useEffect } from 'react'
+import { Wrapper, Nav, AuthSection } from '../styles/Header.styled'
+import LoginContext from '../context/LoginContext'   
+import { useContext } from 'react'
 
-const Header = () => {
-    const sendData = async (pollObject) => {
-        const postOpt = {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-           
-          },
-          body: JSON.stringify({userId: "roberto", password:"robert"}),
-        };
+const Header = () => 
+{
+
+  // const postOpt = 
+  //       {
+  //         method: "POST",
+  //         headers: 
+  //         {
+  //           "Content-Type": "application/json", 
+  //         },
+  //         body:{userId: "roberty", password:"robert"},
+  //       };
     
-        const response = await fetch("http://localhost:4024/auth/login", postOpt)
+  //       const response = await fetch("http://localhost:4024/auth/login", postOpt)
+  //       const data = await response.json();
+  //       console.log(data);
+
+  const {loginCheck} = useContext(LoginContext)
+
+    function handleLogin()
+    {
+        loginCheck();
+    }
+
+    useEffect(() => 
+    {
+      async function checkUser()
+      {
+        const response = await fetch("http://localhost:4024/game")
         const data = await response.json();
         console.log(data);
-      };
+      }
+      checkUser();
+     
+    }, [])
+        
+
     return (
         <Wrapper>
-            <p style={ {fontFamily:"Poppins", fontSize:"2rem", marginLeft:"25px"} }>Typing Practice</p>
-            <button onClick={sendData}>Click me</button>
+          <Nav className="title" to="/">
+            <p>Typing Practice</p>
+          </Nav>
+          <AuthSection>
+            <Nav to="/login">
+              Log In
+            </Nav>
+            <Nav to="/register">
+              Register
+            </Nav>
+          </AuthSection>
         </Wrapper>
     )
 }
