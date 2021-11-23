@@ -77,8 +77,8 @@ export const GameProvidor = ({children}) =>
         function submitWord()
         {
             const clientData = {
-                userId: "20934u4udhwf",
-                gameId: "adjdj3998",
+                userId: "619c2cc38b66f270cf385cac",
+                gameId: "101",
                 time: currentTime / 10,
                 word: currentWord,
                 score: score + 1
