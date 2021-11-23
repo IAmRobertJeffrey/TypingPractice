@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Wrapper, Nav, AuthSection } from '../styles/Header.styled'
-import LoginContext from '../context/LoginContext'   
+import AuthContext from '../context/AuthContext'   
 import { useContext } from 'react'
 
 const Header = () => 
@@ -20,7 +20,7 @@ const Header = () =>
   //       const data = await response.json();
   //       console.log(data);
 
-  const {loginCheck} = useContext(LoginContext)
+  const {loginCheck} = useContext(AuthContext)
 
     function handleLogin()
     {

@@ -1,9 +1,9 @@
 import { createContext, useState} from "react";
 
 
-const LoginContext = createContext({});
+const AuthContext = createContext({});
 
-export const LoginProvidor = ({children}) => 
+export const AuthProvidor = ({children}) => 
 {
    
     const [loggingIn, setLoggingIn] = useState(false);
@@ -24,14 +24,14 @@ export const LoginProvidor = ({children}) =>
 
 
     return(
-        <LoginContext.Provider value={{   
+        <AuthContext.Provider value={{   
             loginCheck,
             loggingIn,
             setLoggingIn
         }}>
         {children}
-        </LoginContext.Provider>
+        </AuthContext.Provider>
     )
 }
 
-export default LoginContext
+export default AuthContext

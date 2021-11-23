@@ -1,11 +1,11 @@
 import React from 'react'
 import { useContext } from 'react'
 import {Wrapper} from '../styles/Auth.styled'
-import LoginContext from '../context/LoginContext'        
+import AuthContext from '../context/AuthContext'        
 
 const Login = () => 
 {
-    const {loggingIn} = useContext(LoginContext)
+    const {loggingIn} = useContext(AuthContext)
 
     return (       
         <Wrapper>

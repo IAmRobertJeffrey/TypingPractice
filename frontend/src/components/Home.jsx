@@ -1,7 +1,8 @@
 import React from 'react'
 import {Wrapper, Mode} from '../styles/Home.styled'
 
-const Home = () => {
+const Home = () => 
+{
     return (
         <Wrapper>
             <Mode to="/practice">
