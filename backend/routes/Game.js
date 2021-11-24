@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const auth = require("../middleware/auth");
 
-router.get("/", auth, async (req, res) => {
+router.post("/", auth, async (req, res) => {
   try {
     console.log("you're in!");
     return res.send("you're in!!");

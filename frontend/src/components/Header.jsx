@@ -1,43 +1,34 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Wrapper, Nav, AuthSection } from '../styles/Header.styled'
-import AuthContext from '../context/AuthContext'   
-import { useContext } from 'react'
+
 
 const Header = () => 
 {
-
-  // const postOpt = 
-  //       {
-  //         method: "POST",
-  //         headers: 
-  //         {
-  //           "Content-Type": "application/json", 
-  //         },
-  //         body:{userId: "roberty", password:"robert"},
-  //       };
-    
-  //       const response = await fetch("http://localhost:4024/auth/login", postOpt)
-  //       const data = await response.json();
-  //       console.log(data);
-
-  const {loginCheck} = useContext(AuthContext)
-
-    function handleLogin()
-    {
-        loginCheck();
-    }
-
-    useEffect(() => 
-    {
-      async function checkUser()
-      {
-        const response = await fetch("http://localhost:4024/game")
-        const data = await response.json();
-        console.log(data);
-      }
-      checkUser();
+ 
+    // useEffect(() => 
+    // {
+    //   async function checkUser()
+    //   {
+    //     const postOpt = 
+    //             {
+    //                 method: "POST",
+    //                 headers: 
+    //                 {
+    //                     "Content-Type": "application/json", 
+                        
+                        
+    //                 },
+    //                 body:localStorage.getItem("token")
+                   
+    //             };
+       
+    //     const response = await fetch("http://localhost:4024/game", postOpt)
+    //     const data = await response.json();
+    //     console.log(data);
+    //   }
+    //   checkUser();
      
-    }, [])
+    // }, [])
         
 
     return (
