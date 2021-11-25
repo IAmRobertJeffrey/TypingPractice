@@ -26,6 +26,7 @@ const Header = () => {
 
         <p>Typing Practice</p>
       </Nav>
+      {/*       
       {!username ?
         <AuthSection>
           <Nav to="/login">
@@ -44,7 +45,7 @@ const Header = () => {
             Log Out
           </Nav>
         </AuthSection>
-      }
+      } */}
     </Wrapper>
   )
 }

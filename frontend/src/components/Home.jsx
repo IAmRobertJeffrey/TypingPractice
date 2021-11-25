@@ -1,16 +1,15 @@
 import React from 'react'
-import {Wrapper, Mode} from '../styles/Home.styled'
+import { Wrapper, Mode } from '../styles/Home.styled'
 
-const Home = () => 
-{
+const Home = () => {
     return (
         <Wrapper>
             <Mode to="/practice">
                 <p>Practice</p>
             </Mode>
-            <Mode to="/online">
+            {/* <Mode to="/online">
                 <p>Online</p>
-            </Mode>
+            </Mode> */}
         </Wrapper>
     )
 }
