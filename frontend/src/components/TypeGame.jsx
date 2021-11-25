@@ -7,7 +7,7 @@ import { useContext } from 'react';
 import GameContext from '../context/GameContext';
 
 const TypeGame = ({ mode }) => {
-    const { gameStart, currentTime, currentTimeLimit, resultsShown } = useContext(GameContext)
+    const { gameStart, currentTime, resultsShown } = useContext(GameContext)
 
     return (
         <Wrapper>
