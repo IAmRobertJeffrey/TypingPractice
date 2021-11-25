@@ -57,12 +57,18 @@ io.on("connection", (client) =>
 
     client.on("logout", (data) => {
       console.log("token: " + client.handshake.auth.token);
-      const user = jwt.decode(
-        client.handshake.auth.token,
-        process.env.JWT_SECRET
-      ).user;
-      currentUsers = currentUsers.filter((current) => current !== user);
       client.emit("logoutResponse")
+
+      if(client.handshake.auth.token)
+      {
+        const user = jwt.decode(
+          client.handshake.auth.token,
+          process.env.JWT_SECRET
+        ).user;
+        currentUsers = currentUsers.filter((current) => current !== user);
+      }
+      
+      
     
     });
 

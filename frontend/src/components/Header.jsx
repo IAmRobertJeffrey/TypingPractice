@@ -1,10 +1,10 @@
 import React from 'react'
-import { Wrapper, Nav } from '../styles/Header.styled'
+import { Wrapper, Nav, AuthSection } from '../styles/Header.styled'
 import { useContext, useEffect } from 'react'
 import AuthContext from '../context/AuthContext'
 
 const Header = () => {
-  const { getUserData } = useContext(AuthContext)
+  const { getUserData, username, logout } = useContext(AuthContext)
 
   useEffect(() => {
     try {
@@ -16,9 +16,9 @@ const Header = () => {
 
   }, [getUserData])
 
-  // function handleLogout() {
-  //   logout();
-  // }
+  function handleLogout() {
+    logout();
+  }
 
   return (
     <Wrapper>
@@ -26,7 +26,7 @@ const Header = () => {
 
         <p>Typing Practice</p>
       </Nav>
-      {/*       
+
       {!username ?
         <AuthSection>
           <Nav to="/login">
@@ -45,7 +45,7 @@ const Header = () => {
             Log Out
           </Nav>
         </AuthSection>
-      } */}
+      }
     </Wrapper>
   )
 }

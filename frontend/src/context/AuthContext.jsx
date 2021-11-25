@@ -1,9 +1,11 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import socketIOClient from "socket.io-client";
 const ENDPOINT = "http://localhost:4024";
-const socket = socketIOClient(ENDPOINT, {
-    auth: {
+const socket = socketIOClient(ENDPOINT, 
+{
+    auth: 
+    {
         token: localStorage.getItem("token")
     }
 });
@@ -11,7 +13,8 @@ const socket = socketIOClient(ENDPOINT, {
 
 const AuthContext = createContext({});
 
-export const AuthProvidor = ({ children }) => {
+export const AuthProvidor = ({ children }) => 
+{
 
     const [loggingIn, setLoggingIn] = useState(false);
     const [registering, setRegistering] = useState(false);
@@ -21,13 +24,16 @@ export const AuthProvidor = ({ children }) => {
     const navigate = useNavigate();
 
 
-    async function getUserData() {
-        socket.on("getUserData", (data) => {
+    async function getUserData() 
+    { 
+        socket.emit("fetchUserData", localStorage.getItem("token"))
+        socket.on("getUserData", (data) => 
+        {
             setUsername(data)
-            console.log(data);
         })
-        socket.emit("fetchUserData", (localStorage.getItem("token")))
     }
+
+    
 
     async function login() {
         try {
@@ -38,8 +44,8 @@ export const AuthProvidor = ({ children }) => {
             }
 
             socket.emit("login", clientData);
-            socket.on("loginResponse", (data) => {
-                console.log(data);
+            socket.on("loginResponse", (data) => 
+            {
                 localStorage.setItem("token", data)
             })
             navigate("/")
@@ -51,12 +57,11 @@ export const AuthProvidor = ({ children }) => {
 
     async function logout() {
         socket.emit("logout")
-        socket.on("logoutResponse", () => {
+        socket.on("logoutResponse", () => 
+        {
             localStorage.setItem("token", "")
             setUsername();
         })
-
-
     }
 
     async function register() {
