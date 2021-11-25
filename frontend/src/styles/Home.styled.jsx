@@ -34,8 +34,6 @@ font-size:2rem;
 &:hover
     {
         transition: 200ms background-color ease-in-out, 200ms border ease-in-out;
-      
-        
         background-color:white;
         color: #102B3F;
         border:15px solid #1a4363;

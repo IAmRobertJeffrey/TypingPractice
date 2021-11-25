@@ -6,7 +6,7 @@ import { createContext, useState, useEffect, useMemo } from "react";
 const GameContext = createContext({});
 
 export const GameProvidor = ({ children }) => {
-    const words = useMemo(() => ["hello", "there", "quick", "chocolate", "sand", "cloud", "ball", "house"], []);
+    const words = useMemo(() => ["hello", "there", "quick", "chocolate", "sand", "cloud", "ball", "house", "boat", "plane", "computer", "lettuce", "mouse", "water", "hot", "cold"], []);
     const [currentWord, setCurrentWord] = useState(words[Math.floor(Math.random() * words.length)]);
     const [currentInput, setCurrentInput] = useState("");
     const [currentTime, setCurrentTime] = useState(0)
