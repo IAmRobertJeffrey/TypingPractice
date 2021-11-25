@@ -14,7 +14,7 @@ const Header = () => {
     }
 
 
-  }, [])
+  }, [getUserData])
 
   function handleLogout() {
     logout();
