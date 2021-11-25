@@ -1,5 +1,5 @@
 import React from 'react'
-import { Wrapper, Mode } from '../styles/Home.styled'
+import { Wrapper, Mode, ModeIncomplete } from '../styles/Home.styled'
 
 const Home = () => {
     return (
@@ -7,9 +7,9 @@ const Home = () => {
             <Mode to="/practice">
                 <p>Practice</p>
             </Mode>
-            {/* <Mode to="/online">
-                <p>Online</p>
-            </Mode> */}
+            <ModeIncomplete to="/">
+                <p style={{ textDecoration: "line-through" }}>Online</p>
+            </ModeIncomplete>
         </Wrapper>
     )
 }
