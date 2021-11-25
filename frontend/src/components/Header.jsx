@@ -1,10 +1,10 @@
 import React from 'react'
-import { Wrapper, Nav, AuthSection } from '../styles/Header.styled'
+import { Wrapper, Nav } from '../styles/Header.styled'
 import { useContext, useEffect } from 'react'
 import AuthContext from '../context/AuthContext'
 
 const Header = () => {
-  const { username, getUserData, logout } = useContext(AuthContext)
+  const { getUserData } = useContext(AuthContext)
 
   useEffect(() => {
     try {
@@ -16,9 +16,9 @@ const Header = () => {
 
   }, [getUserData])
 
-  function handleLogout() {
-    logout();
-  }
+  // function handleLogout() {
+  //   logout();
+  // }
 
   return (
     <Wrapper>
