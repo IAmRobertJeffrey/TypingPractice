@@ -6,23 +6,22 @@ import EndScreen from './EndScreen';
 import { useContext } from 'react';
 import GameContext from '../context/GameContext';
 
-const TypeGame = ({mode}) => 
-{
-    const {gameStart, currentTime, currentTimeLimit, resultsShown} = useContext(GameContext)
+const TypeGame = ({ mode }) => {
+    const { gameStart, currentTime, currentTimeLimit, resultsShown } = useContext(GameContext)
 
-    return ( 
+    return (
         <Wrapper>
             {
-                !gameStart && currentTime === 0 && !resultsShown
-                ?  
-                    <StartScreen/>  
-                :
-                currentTime < currentTimeLimit && gameStart && !resultsShown &&
-                    <GameScreen/>    
-            }   
+                !gameStart && currentTime === 20 && !resultsShown
+                    ?
+                    <StartScreen />
+                    :
+                    currentTime > 0 && gameStart && !resultsShown &&
+                    <GameScreen />
+            }
             {
-                currentTime <= currentTimeLimit && resultsShown &&   
-                    <EndScreen/>
+                currentTime >= 0 && resultsShown &&
+                <EndScreen />
             }
         </Wrapper>
     )

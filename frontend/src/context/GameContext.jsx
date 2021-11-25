@@ -9,7 +9,7 @@ export const GameProvidor = ({ children }) => {
     const words = useMemo(() => ["hello", "there", "quick", "chocolate", "sand", "cloud", "ball", "house", "boat", "plane", "computer", "lettuce", "mouse", "water", "hot", "cold"], []);
     const [currentWord, setCurrentWord] = useState(words[Math.floor(Math.random() * words.length)]);
     const [currentInput, setCurrentInput] = useState("");
-    const [currentTime, setCurrentTime] = useState(0)
+    const [currentTime, setCurrentTime] = useState(20)
     const [currentTimeLimit, setCurrentTimeLimit] = useState(20);
     const [timerList, setTimerList] = useState([]);
     const [wpm, setWpm] = useState(0);
@@ -24,7 +24,7 @@ export const GameProvidor = ({ children }) => {
     //resets the game
     function resetGame() {
         setCurrentInput("");
-        setCurrentTime(0);
+        setCurrentTime(20);
         setTimerList([]);
         setScore(0)
         setResultsShown(false)
@@ -64,7 +64,7 @@ export const GameProvidor = ({ children }) => {
             submitWord();
             setCurrentWord(words[Math.floor(Math.random() * words.length)])
             setCurrentInput("")
-            setCurrentTime(0)
+            setCurrentTime(20)
         }
 
         function submitWord() {
@@ -83,14 +83,14 @@ export const GameProvidor = ({ children }) => {
     useEffect(() => {
         //starts a timer and checks whether the current time is over the limit, stops the game if it is.
         const timer = setInterval(() => {
-            if (currentTime < currentTimeLimit && gameStart) {
-                setCurrentTime(currentTime + 1)
+            if (currentTime > 0 && gameStart) {
+                setCurrentTime(currentTime - 1)
                 setPlayedAGame(true);
             }
             else {
                 clearInterval(timer)
                 setGameStart(false)
-                setCurrentTime(0)
+                setCurrentTime(20)
 
                 if (playedAGame) {
                     console.log(timerList);
@@ -101,7 +101,6 @@ export const GameProvidor = ({ children }) => {
 
                     setResultsShown(true)
                 }
-
             }
         }, 100)
 
