@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 import { useNavigate } from "react-router";
 import socketIOClient from "socket.io-client";
 const ENDPOINT = "http://localhost:4024";
