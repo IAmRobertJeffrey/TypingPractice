@@ -21,8 +21,7 @@ const TypeGame = ({mode}) =>
                     <GameScreen/>    
             }   
             {
-                currentTime <= currentTimeLimit && resultsShown && 
-               
+                currentTime <= currentTimeLimit && resultsShown &&   
                     <EndScreen/>
             }
         </Wrapper>

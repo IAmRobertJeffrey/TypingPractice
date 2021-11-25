@@ -3,13 +3,12 @@ import * as Router from "react-router-dom";
 
 export const Wrapper = styled.main`
 width:50%;
-min-height:calc(100vh - 50px);
+margin-top:12.5vh;
 flex-wrap: wrap;
 
 display: flex;
 justify-content: center;
 align-items: center;
-transform: translate(0px, -50px);
 justify-items: center;
 gap:25px;
 

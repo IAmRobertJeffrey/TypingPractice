@@ -14,7 +14,7 @@ function App()
   
   return (
     <Wrapper> 
-      <Header/> 
+      <AuthProvidor><Header/></AuthProvidor> 
       <Routes> 
         <Route path="/" element={<Home/>} />
         <Route path="/login" element={<AuthProvidor><Login/></AuthProvidor>} />

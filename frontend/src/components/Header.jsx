@@ -1,51 +1,52 @@
 import React from 'react'
 import { Wrapper, Nav, AuthSection } from '../styles/Header.styled'
+import { useContext, useEffect } from 'react'
+import AuthContext from '../context/AuthContext'
+
+const Header = () => {
+  const { username, getUserData, logout } = useContext(AuthContext)
+
+  useEffect(() => {
+    try {
+      getUserData();
+    } catch (err) {
+      console.log(err);
+    }
 
 
-const Header = () => 
-{
- 
-    // useEffect(() => 
-    // {
-    //   async function checkUser()
-    //   {
-    //     const postOpt = 
-    //             {
-    //                 method: "POST",
-    //                 headers: 
-    //                 {
-    //                     "Content-Type": "application/json", 
-                        
-                        
-    //                 },
-    //                 body:localStorage.getItem("token")
-                   
-    //             };
-       
-    //     const response = await fetch("http://localhost:4024/game", postOpt)
-    //     const data = await response.json();
-    //     console.log(data);
-    //   }
-    //   checkUser();
-     
-    // }, [])
-        
+  }, [])
 
-    return (
-        <Wrapper>
-          <Nav className="title" to="/">
-            <p>Typing Practice</p>
+  function handleLogout() {
+    logout();
+  }
+
+  return (
+    <Wrapper>
+      <Nav className="title" to="/">
+
+        <p>Typing Practice</p>
+      </Nav>
+      {!username ?
+        <AuthSection>
+          <Nav to="/login">
+            Log In
           </Nav>
-          <AuthSection>
-            <Nav to="/login">
-              Log In
-            </Nav>
-            <Nav to="/register">
-              Register
-            </Nav>
-          </AuthSection>
-        </Wrapper>
-    )
+          <Nav to="/register">
+            Register
+          </Nav>
+        </AuthSection>
+        :
+        <AuthSection>
+          <Nav to="/profile">
+            {username}
+          </Nav>
+          <Nav onClick={handleLogout} to="/">
+            Log Out
+          </Nav>
+        </AuthSection>
+      }
+    </Wrapper>
+  )
 }
 
 export default Header

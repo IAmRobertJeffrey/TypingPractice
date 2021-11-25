@@ -1,42 +1,27 @@
-const express = require("express");
-const http = require("http");
 const port = process.env.PORT || 4024;
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const cookieParser = require("cookie-parser");
-const cors = require("cors");
 const User = require("./models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { Socket } = require("socket.io");
 
 dotenv.config();
-const app = express();
-app.use(cookieParser());
-app.use(express.json());
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept",
-    "Access-Control-Allow-Origin",
-    "*"
-  );
-  next();
-});
-app.use(cors());
-// app.use("/auth", require("./routes/User"));
-// app.use("/game", require("./routes/Game"));
 
-mongoose.connect(process.env.MDB_CONNECT, (err) => {
-  if (err) {
+mongoose.connect(process.env.MDB_CONNECT, (err) => 
+{
+  if (err) 
+  {
     return console.log(err);
-  } else {
+  } 
+  else 
+  {
     console.log("connected to mongodb!");
   }
 });
 
-const server = http.createServer(app);
-const io = require("socket.io")(server, {
+const io = require("socket.io")(port, 
+  {
   cors: {
     origin: "http://localhost:3000",
     methods: ["GET", "POST"],
@@ -46,78 +31,119 @@ const io = require("socket.io")(server, {
 let currentUsers = [];
 let count = 0;
 
-io.on("connection", (client) => {
-  try {
+io.on("connection", (client) => 
+{
+  try 
+  {
     console.log("Client connected.");
-
-    async function existingCheck() {
-      if (client.handshake.auth.token) {
-        const token = JSON.parse(client.handshake.auth.token);
-        const existingUser = await User.findById(
-          jwt.decode(token, process.env.JWT_SECRET).user
-        );
-        if (existingUser) {
-          currentUsers.push(
-            jwt.decode(existingUser._id, process.env.JWT_SECRET)
-          );
-        }
-      }
-    }
-
-    existingCheck();
-
-    client.on("register", async (data) => {
-      const yo = await register(client, data);
-      console.log(yo);
-      client.emit("registerResponse", yo);
-      currentUsers.push(
-        jwt.decode(
-          JSON.parse(client.handshake.auth.token).user,
-          process.env.JWT_SECRET
-        )
-      );
+    
+    client.on("fetchUserData", (data) => {
+      existingCheck(client, data);
     });
 
-    client.on("login", async (data) => {
+    client.on("register", async (data) => 
+    {
+      const yo = await register(client, data);
+      client.emit("registerResponse", yo);
+      existingCheck(client, yo);
+    });
+
+    client.on("login", async (data) => 
+    {
       const yo = await login(client, data);
       client.emit("loginResponse", yo);
-      currentUsers.push(
-        jwt.decode(
-          JSON.parse(client.handshake.auth.token),
-          process.env.JWT_SECRET
-        )
-      );
-      console.log(
-        jwt.decode(
-          JSON.parse(client.handshake.auth.token),
-          process.env.JWT_SECRET
-        ).user
-      );
-      // console.log(
-      //   jwt.decode(
-      //     JSON.parse(client.handshake.auth.token).user,
-      //     process.env.JWT_SECRET
-      //   )
-      // );
+      console.log(currentUsers);
     });
 
-    client.on("disconnect", () => {
-      console.log("Client disconnected");
-      currentUsers = currentUsers.filter(
-        (current) =>
-          current !==
-          jwt.decode(
-            JSON.parse(client.handshake.auth.token).user,
-            process.env.JWT_SECRET
-          )
-      );
+    client.on("logout", (data) => {
+      console.log("token: " + client.handshake.auth.token);
+      const user = jwt.decode(
+        client.handshake.auth.token,
+        process.env.JWT_SECRET
+      ).user;
+      currentUsers = currentUsers.filter((current) => current !== user);
+      client.emit("logoutResponse")
+    
+    });
+
+    client.on("disconnect", () => 
+    {
+      if (client.handshake.auth.token) 
+      {
+        const token = client.handshake.auth.token;
+        const user = jwt.decode(token, process.env.JWT_SECRET).user;
+        console.log(`Client disconnected: ${user}`);
+
+        currentUsers = currentUsers.filter((current) => current !== user);
+      }
+      else
+      {
+        console.log("not logged in on disconnect");
+      }
     });
   } catch (err) {
     console.log(err);
   }
 });
 
-async function login(client, data) {
+async function existingCheck(client, token) 
+{
+  if (token) 
+  {
+    const existingUser = await User.findById(
+      jwt.decode(token, process.env.JWT_SECRET).user
+    );
+    if (existingUser) 
+    {
+      if (currentUsers.includes(JSON.parse(JSON.stringify(existingUser._id)))) 
+      {
+       
+        console.log("reconnected");
+        currentUsers = currentUsers.filter((current) => current !== existingUser);
+
+        client.emit("getUserData", existingUser.username);
+      } 
+      else 
+      {
+        currentUsers.push(JSON.parse(JSON.stringify(existingUser._id)));
+        client.emit("getUserData", existingUser.username);
+        console.log(existingUser.username);
+      }
+      console.log(currentUsers);
+    }
+  } 
+  else 
+  {
+    console.log("not logged in");
+    console.log(currentUsers);
+  }
+}
+
+async function loginCheck(client, token)
+{
+  if (token) 
+  {
+    console.log("hi");
+    const existingUser = await User.findById(
+      jwt.decode(token, process.env.JWT_SECRET).user
+    );
+    if (existingUser) 
+    {
+      if (currentUsers.includes(JSON.parse(JSON.stringify(existingUser._id)))) 
+      {
+        console.log("biggest hi");
+        currentUsers = currentUsers.filter((current) => current !== existingUser);
+      } 
+    }
+  } 
+
+}
+
+async function login(client, data) 
+{
+
+  loginCheck(client, client.handshake.auth.token)
+
   const { username, password } = data;
 
   const existingUser = await User.findOne({ username: username });
@@ -136,10 +162,8 @@ async function login(client, data) {
     },
     process.env.JWT_SECRET
   );
-
-  // send the token in an http only cookie!!
-  console.log(existingUser._id.toString());
-  client.emit(token);
+  client.emit("getUserData", existingUser.username);
+  currentUsers.push(JSON.parse(JSON.stringify(existingUser._id)));
   return token;
 }
 
@@ -182,8 +206,8 @@ async function register(client, data) {
       process.env.JWT_SECRET
     );
 
-    // send the token in an http only cookie!!
-
+    client.emit("getUserData", savedUser.username);
+    currentUsers.push(JSON.parse(JSON.stringify(savedUser._id)));
     return token;
   } catch (err) {
     console.log(err);
@@ -191,4 +215,4 @@ async function register(client, data) {
   }
 }
 
-server.listen(port, () => console.log(`Listening on port ${port}`));
+

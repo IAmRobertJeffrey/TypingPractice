@@ -2,6 +2,7 @@ import React from 'react'
 import { BeginButton } from '../styles/App.styled'
 import GameContext from '../context/GameContext'        
 import { useContext } from 'react'
+import { Score } from '../styles/EndScreen.styled'
 
 const EndScreen = () => { 
     const {setGameStart, wpm, setResultsShown, resetGame} = useContext(GameContext)
@@ -18,7 +19,7 @@ const EndScreen = () => {
             <BeginButton onClick={handleRestart}>
                 Restart
             </BeginButton>
-            <p>{wpm} words per minute.</p>
+            <Score><b>{wpm}</b> words per minute.</Score>
         </>
     )
 }

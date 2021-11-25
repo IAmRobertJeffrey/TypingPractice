@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect, useMemo} from "react";
-import socketIOClient from "socket.io-client";
-const ENDPOINT = "http://localhost:4024";
-const socket = socketIOClient(ENDPOINT);
+// import socketIOClient from "socket.io-client";
+// const ENDPOINT = "http://localhost:4024";
+// const socket = socketIOClient(ENDPOINT);
 
 const GameContext = createContext({});
 
@@ -11,7 +11,7 @@ export const GameProvidor = ({children}) =>
     const [currentWord, setCurrentWord] = useState(words[Math.floor(Math.random() * words.length)]);
     const [currentInput, setCurrentInput] = useState("");
     const [currentTime, setCurrentTime] = useState(0)
-    const [currentTimeLimit, setCurrentTimeLimit] = useState(50);
+    const [currentTimeLimit, setCurrentTimeLimit] = useState(20);
     const [timerList, setTimerList] = useState([]);
     const [wpm, setWpm]  = useState(0);
     const [gameStart, setGameStart] = useState(false)
@@ -86,7 +86,7 @@ export const GameProvidor = ({children}) =>
                 word: currentWord,
                 score: score + 1
             }
-            socket.emit("word", clientData);
+            // socket.emit("word", clientData);
         }
     
     },[currentInput, currentTime, currentWord, score, setCurrentInput, setCurrentTime, setCurrentWord, setScore, setTimerList, timerList, words])
@@ -129,7 +129,7 @@ export const GameProvidor = ({children}) =>
                 wpm: calculateWPM(),
                 score: score
             }
-            socket.emit("match", clientData);
+            // socket.emit("match", clientData);
         }
 
         function calculateWPM()
@@ -137,6 +137,11 @@ export const GameProvidor = ({children}) =>
             let timeTotal = 0;
             timerList.map((current) => timeTotal += current)
             let multiplier = timeTotal / timerList.length;
+            if(timerList.length === 0)
+            {
+                setWpm(0)
+                return (0);
+            }
             setWpm((60 / multiplier).toFixed(3))
             return (60 / multiplier).toFixed(3);
         }
