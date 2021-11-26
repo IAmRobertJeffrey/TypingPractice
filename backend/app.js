@@ -115,6 +115,7 @@ app.post("/register", (req, res) =>
 app.get("/user", (req, res) =>
 {
 	res.send(req.user);
+	console.log("HELP");
 });
 
 app.get("/logout", function (req, res)
