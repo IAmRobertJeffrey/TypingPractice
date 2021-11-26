@@ -15,7 +15,6 @@ dotenv.config();
 
 const app = express();
 
-
 mongoose.connect(process.env.MDB_CONNECT, (err) =>
 {
 	if (err)
