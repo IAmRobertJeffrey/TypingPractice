@@ -83,7 +83,7 @@ export const AuthProvidor = ({ children }) =>
 		});
 
 		const data = await response.data;
-		console.log(data);
+		console.log(response);
 		setData(data);
 
 	}
