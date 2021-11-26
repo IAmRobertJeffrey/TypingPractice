@@ -16,11 +16,11 @@ export const AuthProvidor = ({ children }) =>
 	const [verifyPassword, setVerifyPassword] = useState("");
 	const navigate = useNavigate();
 
-	function login()
+	async function login()
 	{
 		if (loginUsername && loginPassword)
 		{
-			axios({
+			const response = await axios({
 				method: "post",
 				data: {
 					username: loginUsername,
@@ -28,7 +28,10 @@ export const AuthProvidor = ({ children }) =>
 				},
 				withCredentials: true,
 				url: "https://roberts-typing.herokuapp.com/login"
-			}).then((res) => getUser());
+			});
+
+			console.log(response);
+			getUser();
 			navigate("/");
 		}
 		else
@@ -55,7 +58,7 @@ export const AuthProvidor = ({ children }) =>
 				});
 
 				const data = await response.data;
-				console.log(data);
+				console.log(response);
 				getUser();
 				navigate("/");
 			}
@@ -74,12 +77,13 @@ export const AuthProvidor = ({ children }) =>
 	async function getUser()
 	{
 		const response = await axios({
-			method: "get",
+			method: "GET",
 			withCredentials: true,
 			url: "https://roberts-typing.herokuapp.com/user"
 		});
 
 		const data = await response.data;
+		console.log(data);
 		setData(data);
 
 	}
