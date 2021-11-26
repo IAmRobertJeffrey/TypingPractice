@@ -1,224 +1,132 @@
 const port = process.env.PORT || 4024;
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
+const cors = require("cors");
+const express = require("express");
 const User = require("./models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { Socket } = require("socket.io");
-
+const mongoose = require("mongoose");
+const dotenv = require("dotenv"); const passportSocketIo = require("passport.socketio");
+const session = require("express-session");
+const passport = require("passport");
+const passportLocal = require("passport-local").Strategy;
+const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
 dotenv.config();
 
-mongoose.connect(process.env.MDB_CONNECT, (err) => 
+const app = express();
+
+
+mongoose.connect(process.env.MDB_CONNECT, (err) =>
 {
-  if (err) 
-  {
-    return console.log(err);
-  } 
-  else 
-  {
-    console.log("connected to mongodb!");
-  }
+	if (err)
+	{
+		return console.log(err);
+	}
+	else
+	{
+		console.log("connected to mongodb!");
+	}
 });
 
-const io = require("socket.io")(port, 
-  {
-  cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"],
-  },
+app.use(cors({
+	origin: "http://localhost:3000",
+	credentials: true,
+	exposedHeaders: {
+		"Access-Control-Allow-Origin": "*"
+	}
+}));
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(session({
+	secret: process.env.JWT_SECRET,
+	resave: true,
+	saveUninitialized: true,
+}));
+
+app.use(cookieParser(process.env.JWT_SECRET));
+
+app.use(passport.initialize());
+app.use(passport.session());
+require("./passportConfig")(passport);
+
+app.post("/login", (req, res, next) =>
+{
+	passport.authenticate("local", (err, user, info) =>
+	{
+		if (err)
+		{
+			throw err;
+		}
+		if (!user)
+		{
+			res.send("No user exists");
+		}
+		else
+		{
+			req.logIn(user, err =>
+			{
+				if (err)
+				{
+					throw err;
+				}
+				res.send("Successfully authenticated!");
+				console.log(req.user);
+			});
+		}
+	})(req, res, next);
 });
 
-let currentUsers = [];
-let count = 0;
-
-io.on("connection", (client) => 
+app.post("/register", (req, res) =>
 {
-  try 
-  {
-    console.log("Client connected.");
-    
-    client.on("fetchUserData", (data) => {
-      existingCheck(client, data);
-    });
+	User.findOne({ username: req.body.username }, async (err, doc) =>
+	{
+		if (err)
+		{
+			throw err;
+		}
+		if (doc)
+		{
+			res.send("user already exists");
+		}
+		if (!doc)
+		{
+			const salt = await bcrypt.genSalt();
+			const passwordHash = await bcrypt.hash(req.body.password, salt);
 
-    client.on("register", async (data) => 
-    {
-      const yo = await register(client, data);
-      client.emit("registerResponse", yo);
-      existingCheck(client, yo);
-    });
-
-    client.on("login", async (data) => 
-    {
-      const yo = await login(client, data);
-      client.emit("loginResponse", yo);
-      console.log(currentUsers);
-    });
-
-    client.on("logout", (data) => {
-      console.log("token: " + client.handshake.auth.token);
-      client.emit("logoutResponse")
-
-      if(client.handshake.auth.token)
-      {
-        const user = jwt.decode(
-          client.handshake.auth.token,
-          process.env.JWT_SECRET
-        ).user;
-        currentUsers = currentUsers.filter((current) => current !== user);
-      }
-      
-      
-    
-    });
-
-    client.on("disconnect", () => 
-    {
-      if (client.handshake.auth.token) 
-      {
-        const token = client.handshake.auth.token;
-        const user = jwt.decode(token, process.env.JWT_SECRET).user;
-        console.log(`Client disconnected: ${user}`);
-
-        currentUsers = currentUsers.filter((current) => current !== user);
-      }
-      else
-      {
-        console.log("not logged in on disconnect");
-      }
-    });
-  } catch (err) {
-    console.log(err);
-  }
+			const newUser = new User({
+				username: req.body.username,
+				password: passwordHash
+			});
+			await newUser.save();
+			req.logIn(newUser, err =>
+			{
+				if (err)
+				{
+					throw err;
+				}
+				res.send("Successfully authenticated!");
+				console.log(req.user);
+			});
+		}
+	});
 });
 
-async function existingCheck(client, token) 
+app.get("/user", (req, res) =>
 {
-  if (token) 
-  {
-    const existingUser = await User.findById(
-      jwt.decode(token, process.env.JWT_SECRET).user
-    );
-    if (existingUser) 
-    {
-      if (currentUsers.includes(JSON.parse(JSON.stringify(existingUser._id)))) 
-      {
-       
-        console.log("reconnected");
-        currentUsers = currentUsers.filter((current) => current !== existingUser);
+	res.send(req.user);
+});
 
-        client.emit("getUserData", existingUser.username);
-      } 
-      else 
-      {
-        currentUsers.push(JSON.parse(JSON.stringify(existingUser._id)));
-        client.emit("getUserData", existingUser.username);
-        console.log(existingUser.username);
-      }
-      console.log(currentUsers);
-    }
-  } 
-  else 
-  {
-    console.log("not logged in");
-    console.log(currentUsers);
-  }
-}
-
-async function loginCheck(client, token)
+app.get("/logout", function (req, res)
 {
-  if (token) 
-  {
-    console.log("hi");
-    const existingUser = await User.findById(
-      jwt.decode(token, process.env.JWT_SECRET).user
-    );
-    if (existingUser) 
-    {
-      if (currentUsers.includes(JSON.parse(JSON.stringify(existingUser._id)))) 
-      {
-        console.log("biggest hi");
-        currentUsers = currentUsers.filter((current) => current !== existingUser);
-      } 
-    }
-  } 
+	req.logout();
+	res.send();
+});
 
-}
-
-async function login(client, data) 
+app.listen(port, () =>
 {
-
-  loginCheck(client, client.handshake.auth.token)
-
-  const { username, password } = data;
-
-  const existingUser = await User.findOne({ username: username });
-  if (!existingUser) {
-    return "";
-  }
-
-  const passwordCorrect = await bcrypt.compare(password, existingUser.password);
-  if (!passwordCorrect) {
-    return "";
-  }
-
-  const token = jwt.sign(
-    {
-      user: existingUser._id,
-    },
-    process.env.JWT_SECRET
-  );
-  client.emit("getUserData", existingUser.username);
-  currentUsers.push(JSON.parse(JSON.stringify(existingUser._id)));
-  return token;
-}
-
-async function register(client, data) {
-  try {
-    const { username, password, passwordVerify } = data;
-
-    if (!username || !password || !passwordVerify) {
-      return { response: "Please enter all required fields." };
-    }
-
-    if (password.length < 6) {
-      return { response: "Password must be at least 6 characters." };
-    }
-
-    if (password !== passwordVerify) {
-      return { response: "Passwords provided were not the same." };
-    }
-
-    const existingUser = await User.findOne({ username: username });
-    if (existingUser) {
-      return { response: "Account with this username already exists." };
-    }
-
-    const salt = await bcrypt.genSalt();
-    const passwordHash = await bcrypt.hash(password, salt);
-
-    const newUser = new User({
-      username: username,
-      password: passwordHash,
-    });
-
-    const savedUser = await newUser.save();
-
-    //sign the token
-    const token = jwt.sign(
-      {
-        user: savedUser._id,
-      },
-      process.env.JWT_SECRET
-    );
-
-    client.emit("getUserData", savedUser.username);
-    currentUsers.push(JSON.parse(JSON.stringify(savedUser._id)));
-    return token;
-  } catch (err) {
-    console.log(err);
-    res.send().status(500);
-  }
-}
+	console.log("Express server is now on port " + port);
+});
 
 

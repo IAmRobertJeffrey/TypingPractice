@@ -1,131 +1,124 @@
 import { createContext, useState, useEffect } from "react";
+import axios from 'axios';
 import { useNavigate } from "react-router";
-import socketIOClient from "socket.io-client";
-const ENDPOINT = "http://localhost:4024";
-const socket = socketIOClient(ENDPOINT, 
-{
-    auth: 
-    {
-        token: localStorage.getItem("token")
-    }
-});
-
 
 const AuthContext = createContext({});
 
-export const AuthProvidor = ({ children }) => 
+export const AuthProvidor = ({ children }) =>
 {
+	const [loggingIn, setLoggingIn] = useState(false);
+	const [registering, setRegistering] = useState(false);
+	const [loginUsername, setLoginUsername] = useState("");
+	const [loginPassword, setLoginPassword] = useState("");
+	const [data, setData] = useState();
+	const [registerUsername, setRegisterUsername] = useState("");
+	const [registerPassword, setRegisterPassword] = useState("");
+	const [verifyPassword, setVerifyPassword] = useState("");
+	const navigate = useNavigate();
 
-    const [loggingIn, setLoggingIn] = useState(false);
-    const [registering, setRegistering] = useState(false);
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [verifyPassword, setVerifyPassword] = useState("");
-    const navigate = useNavigate();
+	function login()
+	{
+		if (loginUsername && loginPassword)
+		{
+			axios({
+				method: "post",
+				data: {
+					username: loginUsername,
+					password: loginPassword
+				},
+				withCredentials: true,
+				url: "http://localhost:4024/login"
+			}).then((res) => getUser());
+			navigate("/");
+		}
+		else
+		{
+			alert("Please fill in all fields");
+		}
+
+	}
+
+	function register()
+	{
+		if (registerUsername && registerPassword && verifyPassword)
+		{
+			if (registerPassword === verifyPassword)
+			{
+				axios({
+					method: "post",
+					data: {
+						username: registerUsername,
+						password: registerPassword
+					},
+					withCredentials: true,
+					url: "http://localhost:4024/register"
+				}).then((res) => getUser());
+				navigate("/");
+			}
+			else
+			{
+				alert("Your entered passwords do not match.");
+			}
+		}
+		else
+		{
+			alert("Please fill in all fields.");
+		}
+
+	}
+
+	function getUser()
+	{
+		axios({
+			method: "get",
+
+			withCredentials: true,
+			url: "http://localhost:4024/user"
+		}).then((res) => setData(res.data));
+
+	}
+
+	useEffect(() =>
+	{
+		getUser();
+	}, []);
+
+	function logout()
+	{
+		axios({
+			method: "get",
+			withCredentials: true,
+			url: "http://localhost:4024/logout"
+		}).then((res) => setData(res.data));
+
+	}
 
 
-    async function getUserData() 
-    { 
-        socket.emit("fetchUserData", localStorage.getItem("token"))
-        socket.on("getUserData", (data) => 
-        {
-            setUsername(data)
-        })
-    }
+	return (
+		<AuthContext.Provider value={{
+			loggingIn,
+			setLoggingIn,
+			registering,
+			setRegistering,
+			register,
+			logout,
+			login,
+			loginUsername,
+			loginPassword,
+			registerUsername,
+			registerPassword,
+			verifyPassword,
+			setLoginUsername,
+			setLoginPassword,
+			setRegisterUsername,
+			setRegisterPassword,
+			setVerifyPassword,
+			data
 
-    
+		}}>
+			{children}
+		</AuthContext.Provider>
+	);
+};
 
-    async function login() {
-        try {
-            const clientData =
-            {
-                username: username,
-                password: password
-            }
-
-            socket.emit("login", clientData);
-            socket.on("loginResponse", (data) => 
-            {
-                localStorage.setItem("token", data)
-            })
-            navigate("/")
-        }
-        catch (err) {
-            console.log(err);
-        }
-    }
-
-    async function logout() {
-        socket.emit("logout")
-        socket.on("logoutResponse", () => 
-        {
-            localStorage.setItem("token", "")
-            setUsername();
-        })
-    }
-
-    async function register() {
-        if (username.length > 1 && password.length > 1 && verifyPassword.length > 1) {
-            if (password === verifyPassword) {
-                try {
-                    const bodyObj =
-                    {
-                        username: username,
-                        password: password,
-                        passwordVerify: verifyPassword
-                    }
-                    socket.emit("register", bodyObj)
-                    socket.on("registerResponse", (data) => {
-                        console.log(data);
-                        localStorage.setItem("token", data)
-                    })
-                } catch (err) {
-                    console.log(JSON.stringify(err));
-                }
-            }
-            else {
-                console.log("not matching passwords");
-            }
-        }
-        else {
-            console.log("fill all fields");
-        }
-    }
-
-    function loginCheck() {
-
-        if (loggingIn) {
-            setLoggingIn(false);
-        } else {
-            setUsername("");
-            setPassword("");
-            setLoggingIn(true);
-        }
-    }
-
-
-    return (
-        <AuthContext.Provider value={{
-            loginCheck,
-            loggingIn,
-            setLoggingIn,
-            username,
-            password,
-            verifyPassword,
-            setUsername,
-            setPassword,
-            setVerifyPassword,
-            registering,
-            setRegistering,
-            register,
-            login,
-            getUserData,
-            logout
-
-        }}>
-            {children}
-        </AuthContext.Provider>
-    )
-}
-
-export default AuthContext
+export default AuthContext;
