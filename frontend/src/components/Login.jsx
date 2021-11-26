@@ -1,43 +1,61 @@
-import React from 'react'
-import { useContext, useEffect } from 'react'
-import { Wrapper } from '../styles/Auth.styled'
-import AuthContext from '../context/AuthContext'
-import { AuthForm } from '../styles/Auth.styled'
-
-const Login = () => {
-  const { username,
-    setUsername,
-    password,
-    setPassword,
-    setLoggingIn,
-    setRegistering,
-    login
-  } = useContext(AuthContext)
+import React from 'react';
+import { useContext, useEffect } from 'react';
+import { Wrapper } from '../styles/Auth.styled';
+import AuthContext from '../context/AuthContext';
+import { AuthForm, AuthButton } from '../styles/Auth.styled';
 
 
-  useEffect(() => {
-    setRegistering(false);
-    setLoggingIn(true);
-  }, [setLoggingIn, setRegistering])
+const Login = () =>
+{
+	const {
+		loginUsername,
+		loginPassword,
+		setLoginUsername,
+		setLoginPassword,
+		setLoggingIn,
+		setRegistering,
+		login,
+	} = useContext(AuthContext);
 
 
-  function handleSubmit(e) {
+	useEffect(() =>
+	{
+		setRegistering(false);
+		setLoggingIn(true);
+	}, [setLoggingIn, setRegistering]);
 
-    e.preventDefault()
-    login()
-  }
 
-  return (
-    <Wrapper>
-      <AuthForm onSubmit={(e) => handleSubmit(e)}>
-        <label htmlFor="username">Username</label>
-        <input id="username" onChange={(e) => setUsername(e.target.value)} value={username} placeholder="Username" type="text" />
-        <label htmlFor="password">Password</label>
-        <input id="password" onChange={(e) => setPassword(e.target.value)} value={password} placeholder="Password" type="password" />
-        <button type="submit">Register</button>
-      </AuthForm>
-    </Wrapper>
-  )
-}
+	useEffect(() =>
+	{
+		setLoginUsername("");
+		setLoginPassword("");
+	}, [setLoginPassword, setLoginUsername]);
 
-export default Login
+	function handleSubmit(e)
+	{
+		e.preventDefault();
+
+		console.log("clicked login button");
+		login();
+
+		setLoginUsername("");
+		setLoginPassword("");
+
+
+
+	}
+
+	return (
+		<Wrapper>
+			<AuthForm onSubmit={(e) => handleSubmit(e)}>
+				<label htmlFor="username">Username</label>
+				<input id="username" onChange={(e) => setLoginUsername(e.target.value)} value={loginUsername} placeholder="Username" type="text" />
+				<label htmlFor="password">Password</label>
+				<input id="password" onChange={(e) => setLoginPassword(e.target.value)} value={loginPassword} placeholder="Password" type="password" />
+				<AuthButton type="submit">Log In</AuthButton>
+			</AuthForm>
+		</Wrapper>
+	);
+};
+
+export default Login;

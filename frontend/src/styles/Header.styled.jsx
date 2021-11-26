@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from "styled-components";
 import * as Router from "react-router-dom";
 
 export const Wrapper = styled.header`
@@ -10,7 +10,7 @@ justify-content: space-between;
 padding-left: 50px;
 padding-right:50px;
 
-`
+`;
 
 export const Nav = styled(Router.Link)`
 width: fit-content;
@@ -22,13 +22,20 @@ color: white;
 align-items: center;
 font-family:Poppins;
 font-size:2rem;
-`
+@media (max-width: 700px) {
+    font-size:1.2rem;
+  }
+
+`;
 export const AuthSection = styled.div`
 gap: 50px;
 height:50px;
 background-color: #1a4363;
 display: flex;
 align-items: center;
+@media (max-width: 700px) {
+    gap: 10px;
+  }
 
 a
 {
@@ -61,4 +68,4 @@ a
 }
 }
 
-`
+`;
