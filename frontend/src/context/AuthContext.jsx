@@ -71,7 +71,6 @@ export const AuthProvidor = ({ children }) =>
 	{
 		axios({
 			method: "get",
-
 			withCredentials: true,
 			url: "https://roberts-typing.herokuapp.com/user"
 		}).then((res) => setData(res.data));

@@ -16,8 +16,6 @@ export const GameProvidor = ({ children }) =>
 	const [resultsShown, setResultsShown] = useState(false);
 	const [playedAGame, setPlayedAGame] = useState(false);
 
-	console.log("hello gamecontext");
-
 	//resets the game
 	function resetGame()
 	{
