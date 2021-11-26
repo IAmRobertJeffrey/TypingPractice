@@ -29,7 +29,8 @@ mongoose.connect(process.env.MDB_CONNECT, (err) =>
 });
 
 app.use(cors({
-
+	origin: "https://roberts-typing.web.app",
+	credentials: true,
 	exposedHeaders: {
 		"Access-Control-Allow-Origin": "*"
 	}
