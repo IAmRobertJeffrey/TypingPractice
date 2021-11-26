@@ -27,7 +27,7 @@ export const AuthProvidor = ({ children }) =>
 					password: loginPassword
 				},
 				withCredentials: true,
-				url: "http://roberts-typing.herokuapp.com/login"
+				url: "https://roberts-typing.herokuapp.com/login"
 			}).then((res) => getUser());
 			navigate("/");
 		}
@@ -51,7 +51,7 @@ export const AuthProvidor = ({ children }) =>
 						password: registerPassword
 					},
 					withCredentials: true,
-					url: "http://roberts-typing.herokuapp.com/register"
+					url: "https://roberts-typing.herokuapp.com/register"
 				}).then((res) => getUser());
 				navigate("/");
 			}
@@ -73,7 +73,7 @@ export const AuthProvidor = ({ children }) =>
 			method: "get",
 
 			withCredentials: true,
-			url: "http://roberts-typing.herokuapp.com/user"
+			url: "https://roberts-typing.herokuapp.com/user"
 		}).then((res) => setData(res.data));
 
 	}
@@ -88,7 +88,7 @@ export const AuthProvidor = ({ children }) =>
 		axios({
 			method: "get",
 			withCredentials: true,
-			url: "http://roberts-typing.herokuapp.com/logout"
+			url: "https://roberts-typing.herokuapp.com/logout"
 		}).then((res) => setData(res.data));
 
 	}
