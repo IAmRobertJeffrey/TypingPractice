@@ -3,14 +3,13 @@ const cors = require("cors");
 const express = require("express");
 const User = require("./models/User");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
-const dotenv = require("dotenv"); const passportSocketIo = require("passport.socketio");
+const dotenv = require("dotenv");
 const session = require("cookie-session");
 const passport = require("passport");
-const passportLocal = require("passport-local").Strategy;
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
+require("./passportConfig")(passport);
 dotenv.config();
 
 
@@ -49,7 +48,7 @@ app.use(cookieParser(process.env.JWT_SECRET));
 
 app.use(passport.initialize());
 app.use(passport.session());
-require("./passportConfig")(passport);
+
 
 app.post("/login", (req, res, next) =>
 {
