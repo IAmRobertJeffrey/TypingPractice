@@ -29,7 +29,7 @@ mongoose.connect(process.env.MDB_CONNECT, (err) =>
 });
 
 app.use(cors({
-	origin: "http://localhost:3000",
+	origin: "http://roberts-typing.herokuapp.com/",
 	credentials: true,
 	exposedHeaders: {
 		"Access-Control-Allow-Origin": "*"
