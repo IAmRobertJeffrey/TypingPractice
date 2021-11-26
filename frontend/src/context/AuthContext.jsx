@@ -38,13 +38,13 @@ export const AuthProvidor = ({ children }) =>
 
 	}
 
-	function register()
+	async function register()
 	{
 		if (registerUsername && registerPassword && verifyPassword)
 		{
 			if (registerPassword === verifyPassword)
 			{
-				axios({
+				const response = await axios({
 					method: "post",
 					data: {
 						username: registerUsername,
@@ -52,7 +52,11 @@ export const AuthProvidor = ({ children }) =>
 					},
 					withCredentials: true,
 					url: "https://roberts-typing.herokuapp.com/register"
-				}).then((res) => getUser());
+				});
+
+				const data = await response.data;
+				console.log(data);
+				getUser();
 				navigate("/");
 			}
 			else
@@ -67,13 +71,16 @@ export const AuthProvidor = ({ children }) =>
 
 	}
 
-	function getUser()
+	async function getUser()
 	{
-		axios({
+		const response = await axios({
 			method: "get",
 			withCredentials: true,
 			url: "https://roberts-typing.herokuapp.com/user"
-		}).then((res) => setData(res.data));
+		});
+
+		const data = await response.data;
+		setData(data);
 
 	}
 
@@ -82,13 +89,16 @@ export const AuthProvidor = ({ children }) =>
 		getUser();
 	}, []);
 
-	function logout()
+	async function logout()
 	{
-		axios({
+		const response = await axios({
 			method: "get",
 			withCredentials: true,
 			url: "https://roberts-typing.herokuapp.com/logout"
-		}).then((res) => setData(res.data));
+		});
+
+		const data = await response.data;
+		setData(data);
 
 	}
 
