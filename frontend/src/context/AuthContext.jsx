@@ -74,7 +74,7 @@ export const AuthProvidor = ({ children }) =>
 
 			withCredentials: true,
 			url: "https://roberts-typing.herokuapp.com/user"
-		}).then((res) => console.log(res.data));
+		}).then((res) => console.log(res));
 
 	}
 
