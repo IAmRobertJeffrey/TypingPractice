@@ -29,7 +29,7 @@ mongoose.connect(process.env.MDB_CONNECT, (err) =>
 });
 
 app.use(cors({
-	credentials: true,
+
 	exposedHeaders: {
 		"Access-Control-Allow-Origin": "*"
 	}
